@@ -428,6 +428,41 @@ type stopJobResp struct {
 	RequestID string `json:"request-id"`
 }
 
+// SavePointsTriggerStatus Returns the status of a savepoint operation.
+func (c *Client) SavePointsTriggerStatus(jobID string, triggerID string) (savepointsTriggerResp, error) {
+	var r savepointsTriggerResp
+
+	uri := fmt.Sprintf("/jobs/%s/savepoints/%s", jobID, triggerID)
+	req, err := http.NewRequest(
+		"GET",
+		c.url(uri),
+		nil,
+	)
+	if err != nil {
+		return r, err
+	}
+	b, err := c.client.Do(req)
+	if err != nil {
+		return r, err
+	}
+	err = json.Unmarshal(b, &r)
+	return r, err
+}
+
+type savepointsTriggerResp struct {
+	Status    savepointsTriggerStatus    `json:"status"`
+	Operation savepointsTriggerOperation `json:"operation"`
+}
+
+type savepointsTriggerStatus struct {
+	ID string `json:"id"`
+}
+
+type savepointsTriggerOperation struct {
+	Location     string `json:"location"`
+	FailureCause string `json:"failure-cause"`
+}
+
 // StopJob stops a job with a savepoint. Optionally, it can also
 // emit a MAX_WATERMARK before taking the savepoint to flush out
 // any state waiting for timers to fire. This async operation
