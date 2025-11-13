@@ -459,8 +459,8 @@ type savepointsTriggerStatus struct {
 }
 
 type savepointsTriggerOperation struct {
-	Location     string `json:"location"`
-	FailureCause string `json:"failure-cause"`
+	Location     string      `json:"location"`
+	FailureCause interface{} `json:"failure-cause"`
 }
 
 // StopJob stops a job with a savepoint. Optionally, it can also
